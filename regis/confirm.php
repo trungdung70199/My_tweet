@@ -1,44 +1,75 @@
 <?php
+//セッション開始
+session_start();
+session_regenerate_id(true);
 
+// POSTリクエスト以外は処理しない
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    exit('Can not get access');
+    exit('can not get access');
 }
-// POST
-$post = $_POST;
-// validation
-$error = validate($post);
-// If have error, redirect (URL link)
-if ($error) {
+// POSTリクエストされたデータを取得
+// サニタイズ（エスケープ処理）
+$post = check($_POST);
+
+// POSTデータをセッションに保存
+$_SESSION['regist'] = $_POST;
+
+// バリデーション
+$errors = validate($post);
+
+// エラーだったら、入力画面にリダイレクト(URL転送)
+if ($errors) {
     header('Location: input.php');
     exit;
 }
-//Debug
+
+//デバッグ関数で確認
 // var_dump($post);
-function validate($data) {
-    $error = [];
+
+function validate($data)
+{
+    $errors = [];
     if (empty($data['name'])) {
-        $error['name'] = "Name not found";
+        $errors['name'] = "Nameが入力されていません";
     }
     if (empty($data['email'])) {
-        $error['email'] = "Email not found";
+        $errors['email'] = "Emailが入力されていません";
     }
+    if (empty($data['password'])) {
+        $errors['password'] = "Passwordが入力されていません";
+    }
+    return $errors;
+}
+
+/**
+ * サニタイズ（エスケープ処理）
+ */
+function check($posts)
+{
+    if (empty($posts)) return;
+    foreach ($posts as $column => $post) {
+        $posts[$column] = htmlspecialchars($post, ENT_QUOTES, 'UTF-8');
+    }
+    return $posts;
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Tweet</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
+
 <body>
     <main id="id" class="d-flex justify-content-center">
         <div class="w-50 mt-3 p-5 bg-light">
-            <h2 class="h2 mb-3 fw-normal text-center">Regis</h2>
+            <h2 class="h2 mb-3 fw-normal text-center">Regist</h2>
             <p>この内容で登録しますか？</p>
-            <form action="" method="post">
+            <form action="add.php" method="post">
                 <div class="mb-2">
                     <label for="" class="form-label">Name</label>
                     <!-- PHPの変数を表示 -->
@@ -49,11 +80,12 @@ function validate($data) {
                     <?= $post['email'] ?>
                 </div>
                 <div>
-                    <button class="w-100 mb-2 btn btn-primary">Regis</button>
+                    <button class="w-100 mb-2 btn btn-primary">Regist</button>
                     <a href="input.php" class="w-100 btn btn-outline-primary">Back</a>
                 </div>
             </form>
         </div>
     </main>
 </body>
+
 </html>

@@ -7,11 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // セッションから入力されたデータを取得
-$post = $_SESSION['regis'];
+$post = $_SESSION['regist'];
 
-// TODO: MySQLに保存
+// TODO: MySQLに保存(SQL INSERT)
 $user = new User();
-$user->insert($post);
-
-// 完了画面にリダイレクト
-header('Location: result.php');
+if ($user->insert($post)) {
+    //成功
+    // 完了画面にリダイレクト
+    header('Location: result.php');
+} else {
+    //失敗
+    // 入力画面にリダイレクト
+    header('Location: input.php');
+}
