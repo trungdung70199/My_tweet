@@ -1,7 +1,5 @@
 <?php
-//セッション開始
-session_start();
-session_regenerate_id(true);
+require_once('../app.php');
 
 // POSTリクエスト以外は処理しない
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -12,6 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $post = $_SESSION['regis'];
 
 // TODO: MySQLに保存
+$user = new User();
+$user->insert($post);
 
 // 完了画面にリダイレクト
 header('Location: result.php');
