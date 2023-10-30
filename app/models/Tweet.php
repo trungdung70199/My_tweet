@@ -7,6 +7,15 @@ class Tweet extends Model
         //TODO: messageが未入力の時のエラーチェック
     }
 
+    public function fetch($id)
+    {
+        //Tweet IDで1件データ取得するSQL
+        $sql = "SELECT * FROM tweets WHERE id = {$id};";
+        //SQL実行
+        $value = $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+        return $value;
+    }
+
     public function get()
     {
         // 投稿データを投稿日時の新しい順に20件取得
@@ -37,6 +46,21 @@ class Tweet extends Model
         //tweets にログインユーザIDとメッセージを挿入するSQL
         $sql = "INSERT INTO tweets (user_id, message)
                 VALUES (:user_id, :message)";
+        $stmt = $this->pdo->prepare($sql);
+        //MySQLに実行
+        return $stmt->execute($data);
+    }
+
+    /**
+     * Tweet削除
+     * @param int $id
+     * @return boolean
+     */
+    public function delete($id)
+    {
+        $data['id'] = $id;
+        //TweetのIDでデータを削除
+        $sql = "DELETE FROM tweets WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         //MySQLに実行
         return $stmt->execute($data);

@@ -48,6 +48,9 @@ $tweets = $tweet->get();
                         </li>
                     </ul>
                 </nav>
+                <div class="tweet-user">
+                    <span class="fw-bold">@<?= $auth_user['name'] ?></span>
+                </div>
             </header>
 
             <main class="col-md-9">
@@ -65,52 +68,54 @@ $tweets = $tweet->get();
 
                 <div class="row">
                     <!-- Tweetの繰り返し表示 -->
-                    <?php foreach($tweets as $value): ?>
-                    <div class="tweet d-flex">
-                        <!-- profile image -->
-                        <div class="profile-image">
-                            <img src="images/me.png">
-                        </div>
-                        <!-- tweet body -->
-                        <div class="tweet-body">
-                            <!-- user info -->
-                            <div class="tweet-user">
-                                <span class="fw-bold">@<?= $value['user_name'] ?></span>
-                                <span class="ms-1 text-secondary"><?= date('Y/m/d H:i', strtotime($value['created_at'])) ?></span>
+                    <?php foreach ($tweets as $value) : ?>
+                        <div class="tweet d-flex">
+                            <!-- profile image -->
+                            <div class="profile-image">
+                                <img src="images/me.png">
                             </div>
+                            <!-- tweet body -->
+                            <div class="tweet-body">
+                                <!-- user info -->
+                                <div class="tweet-user">
+                                    <span class="fw-bold">@<?= $value['user_name'] ?></span>
+                                    <span class="ms-1 text-secondary"><?= date('Y/m/d H:i', strtotime($value['created_at'])) ?></span>
+                                </div>
 
-                            <!-- post -->
-                            <div class="tweet-text mt-2 mb-2">
-                                <?= nl2br($value['message']) ?>
+                                <!-- post -->
+                                <div class="tweet-text mt-2 mb-2">
+                                    <?= nl2br($value['message']) ?>
+                                </div>
+
+                                <!-- tweet nav -->
+                                <nav class="tweet-nav">
+                                    <ul class="d-flex">
+                                        <li>
+                                            <a href="#">
+                                                <img src="svg/bubble.svg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <img src="svg/heart.svg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <img src="svg/loop.svg" alt="">
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <?php if ($auth_user['id'] == $value['user_id']): ?>
+                                            <a href="tweet/delete.php?id=<?= $value['id'] ?>">
+                                                <img src="svg/trash.svg" alt="">
+                                            </a>
+                                            <?php endif ?>
+                                        </li>
+                                    </ul>
+                                </nav>
                             </div>
-
-                            <!-- tweet nav -->
-                            <nav class="tweet-nav">
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/bubble.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/heart.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/loop.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/trash.svg" alt="">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
                         </div>
-                    </div>
                     <?php endforeach ?>
                 </div>
 
