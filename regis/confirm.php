@@ -15,9 +15,10 @@ $_SESSION['regist'] = $_POST;
 // バリデーション
 $errors = validate($post);
 
-
 // エラーだったら、入力画面にリダイレクト(URL転送)
 if ($errors) {
+    // エラーをセッションに登録
+    $_SESSION['errors'] = $errors;
     header('Location: input.php');
     exit;
 }
@@ -63,12 +64,7 @@ function check($posts)
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Tweet</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
+<?php include('../app/views/components/head.php') ?>
 
 <body>
     <main id="id" class="d-flex justify-content-center">
