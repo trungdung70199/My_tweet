@@ -1,7 +1,6 @@
 <?php
-//セッション開始
-session_start();
-session_regenerate_id(true);
+//初期設定読み込み
+require_once('app.php');
 
 // ログインユーザチェック
 $auth_user = $_SESSION['auth_user'];
@@ -10,6 +9,10 @@ if (empty($auth_user)) {
     header('Location: login/');
     exit;
 }
+
+//Tweet投稿一覧を取得
+$tweet = new Tweet();
+$tweets = $tweet->get();
 ?>
 
 <!DOCTYPE html>
@@ -51,8 +54,9 @@ if (empty($auth_user)) {
                 <h2>Home</h2>
 
                 <div class="row">
-                    <form action="" method="post">
-                        <textarea name="message" class="form-control" placeholder="いまどうしてる？"></textarea>
+                    <!-- Tweet投稿フォーム -->
+                    <form action="tweet/add.php" method="post">
+                        <textarea required name="message" class="form-control" placeholder="いまどうしてる？"></textarea>
                         <div class="mt-3 mb-3 text-center">
                             <button class="btn btn-primary rounded-pill w-25">Tweet</button>
                         </div>
@@ -60,6 +64,8 @@ if (empty($auth_user)) {
                 </div>
 
                 <div class="row">
+                    <!-- Tweetの繰り返し表示 -->
+                    <?php foreach($tweets as $value): ?>
                     <div class="tweet d-flex">
                         <!-- profile image -->
                         <div class="profile-image">
@@ -69,13 +75,13 @@ if (empty($auth_user)) {
                         <div class="tweet-body">
                             <!-- user info -->
                             <div class="tweet-user">
-                                <span class="fw-bold">@YSE</span>
-                                <span class="ms-1 text-secondary">30分前</span>
+                                <span class="fw-bold">@<?= $value['user_name'] ?></span>
+                                <span class="ms-1 text-secondary"><?= date('Y/m/d H:i', strtotime($value['created_at'])) ?></span>
                             </div>
 
                             <!-- post -->
                             <div class="tweet-text mt-2 mb-2">
-                                今日は晴れました！
+                                <?= nl2br($value['message']) ?>
                             </div>
 
                             <!-- tweet nav -->
@@ -105,94 +111,7 @@ if (empty($auth_user)) {
                             </nav>
                         </div>
                     </div>
-                    <div class="tweet d-flex">
-                        <!-- profile image -->
-                        <div class="profile-image">
-                            <img src="images/me.png">
-                        </div>
-                        <!-- tweet body -->
-                        <div class="tweet-body">
-                            <!-- user info -->
-                            <div class="tweet-user">
-                                <span class="fw-bold">@YSE</span>
-                                <span class="ms-1 text-secondary">1時間前</span>
-                            </div>
-
-                            <!-- post -->
-                            <div class="tweet-text mt-2 mb-2">
-                                東京に行ってきました！
-                            </div>
-                            <!-- tweet nav -->
-                            <nav class="tweet-nav">
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/bubble.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/heart.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/loop.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/trash.svg" alt="">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-                    <div class="tweet d-flex">
-                        <!-- profile image -->
-                        <div class="profile-image">
-                            <img src="images/me.png">
-                        </div>
-                        <!-- tweet body -->
-                        <div class="tweet-body">
-                            <!-- user info -->
-                            <div class="tweet-user">
-                                <span class="fw-bold">@YSE</span>
-                                <span class="ms-1 text-secondary">2023/05/12</span>
-                            </div>
-
-                            <!-- post -->
-                            <div class="tweet-text mt-2 mb-2">
-                                コンサートに行ってきました。
-                            </div>
-                            <!-- tweet navigation -->
-                            <nav class="tweet-nav">
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/bubble.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/heart.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/loop.svg" alt="">
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <img src="svg/trash.svg" alt="">
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
+                    <?php endforeach ?>
                 </div>
 
             </main>
